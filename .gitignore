@@ -1,0 +1,4 @@
+#: ignorance
+
+*.sublime-project
+*.sublime-workspace
