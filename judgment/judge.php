@@ -186,25 +186,41 @@ while ($a=mysql_fetch_row($r)){
     if (s[i++]==0) fl=1;
     }
    if (fl==0) 
-   {<? if (!$_SESSION['np'])
-       {echo 'document.getElementById("res").innerHTML=res;';
-        if ($sp) echo 'pen=parseFloat(document.getElementById("pen").innerHTML);
+   {
+
+<?php //:
+////////:-----------------------------------------------------------------------
+
+    if (!$_SESSION['np']) {
+      echo 'document.getElementById("res").innerHTML=res;';
+      if ($sp) echo 'pen=parseFloat(document.getElementById("pen").innerHTML);
 		       if (isNaN(pen)) {tot="&nbsp"; r['.$c.']['.$si.'][1]=-1;}
 			else {tot=res-pen;r['.$c.']['.$si.'][1]=tot;}
 		       document.getElementById("tot").innerHTML=tot;'; 
+        
         else echo 'r['.$c.']['.$si.'][1]=res;';
         echo 'sortpl('.$c.');';
-        } ?>
+        }
+
+////////: ?>
+
     document.judges.subbut.disabled=false;
     }
    else 
    {document.judges.subbut.disabled=true; 
-    <? if (!$_SESSION['np']) 
+    
+<?php //:
+////////:-----------------------------------------------------------------------
+
+    if (!$_SESSION['np']) 
        {echo 'document.getElementById("res").innerHTML="&nbsp;";';
         if($sp) echo 'document.getElementById("tot").innerHTML="&nbsp;";r['.$c.']['.$si.'][1]=-1;';
         else echo 'r['.$c.']['.$si.'][1]=-1;';
         echo 'sortpl('.$c.');';
-        }?>
+        }
+
+////////: ?>
+
     }
    }
   function timer()
@@ -295,11 +311,18 @@ if (($_SESSION['np']) and ($_GET['skid'])) {
 
 ////////: ?>
 
-<script type="text/javascript">  
-<? if ((!$_SESSION['np'])and($_GET['skid'])) echo 'load();';
-if (!$_SESSION['np']) 
-{echo $jsm.$spj; 
-?>
+<script type="text/javascript">
+
+<?php //:
+////////:-----------------------------------------------------------------------
+
+if ((!$_SESSION['np']) and ($_GET['skid'])) echo 'load();';
+if (!$_SESSION['np']){
+
+  echo $jsm.$spj; 
+
+////////: ?>
+
 function sortpl(ci)
   {ri=r[ci].slice();prev=-1;k=0;
    ri.sort(function(a, b){return b[1]-a[1];});
@@ -313,9 +336,11 @@ function sortpl(ci)
     }
    }
 for (var i=0;i<<?=$ci?>;i++) {sortpl(c[i]);}
-<?
- }
-?>
+
+<?php //:
+////////:-----------------------------------------------------------------------
+    }
+////////: ?>
 </script>
 
 <br><input type=button value="Exit from Judgment Panel" onclick="window.open('index.php?exit=1','_self');">
