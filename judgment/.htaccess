@@ -1,0 +1,12 @@
+Options +FollowSymLinks
+RewriteEngine On
+RewriteBase /
+RewriteCond %{HTTPS} !=on
+RewriteRule ^.*$ https://%{SERVER_NAME}%{REQUEST_URI} [R,L]
+php_value session.gc_maxlifetime 57600
+php_flag session.use_trans_sid Off
+php_flag session.use_cookies On
+php_flag session.use_only_cookies On
+php_flag display_errors on
+php_value error_reporting 7
+AddType application/x-httpd-php .inc
