@@ -1,6 +1,9 @@
-<?
-require ('check.inc');
+<?php //:
+////////:
+
+require('check.inc');
 require('../connect.php');
+
 if (!$_POST['id']) mysql_query('insert into title (cname,ntype,ngroup,cftpfile,cplace,ddate,cdiscip,ccategory,njshowpen,nflag,nnumber,nname,nname_local,nplace,nteam) values ("
 '.$_POST['cname'].'",'.$_POST['ntype'].'
 ,'.($_POST['ngroup']?$_POST['ngroup']:'NULL').'
@@ -17,6 +20,7 @@ if (!$_POST['id']) mysql_query('insert into title (cname,ntype,ngroup,cftpfile,c
 ,'.($_POST['nnamel']?'1':'0').'
 ,'.($_POST['nplace']?'1':'0').'
 ,'.($_POST['nteam']?'1':'0').')');
+
 else if (!$_POST['refresh']) mysql_query('Update title Set 
 cname="'.$_POST['cname'].'",ntype='.$_POST['ntype'].'
 ,ngroup='.($_POST['ngroup']?$_POST['ngroup']:'NULL').'
@@ -34,16 +38,25 @@ cname="'.$_POST['cname'].'",ntype='.$_POST['ntype'].'
 ,nplace='.($_POST['nplace']?'1':'0').'
 ,nteam='.($_POST['nteam']?'1':'0').'
  Where id='.$_POST['id']);
-if ($st=mysql_error()) echo $st;
- else {$lock='chlock';
-       while (file_exists($lock)) usleep(100000);
-       $ilf=fopen($lock,'w');
-       fwrite($ilf, 1);
-       fclose($ilf);
-       $f=fopen('../ch.html', 'w');
-       fwrite($f,time());
-       fclose($f);
-       unlink($lock);
-       require ('genindex.php');
-       header('Location: admin.php?mode=title');}
+
+if ($st=mysql_error()) {
+  echo $st;
+} else {
+  $lock='chlock';
+  
+  while (file_exists($lock)) usleep(100000);
+  
+  $ilf = fopen($lock,'w');
+  fwrite($ilf, 1);
+  fclose($ilf);
+  
+  $f = fopen('../ch.html', 'w');
+  fwrite($f,time());
+  fclose($f);
+  unlink($lock);
+  
+  require ('genindex.php');
+  header('Location: admin.php?mode=title');
+}
+
 ?>
