@@ -43,9 +43,9 @@ if ($_GET['exit']){
 </head>
 <body onload="document.getElementById('i1').focus();">
 
-<?php
+<?php //:-----------------------------------------------------------------------
     echo '<center>'. $st .'<br>';
-?>
+////////: ?>
 
 <form method="POST">
 <table border=0>
