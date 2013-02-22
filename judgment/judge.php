@@ -1,19 +1,59 @@
-<?
-require ('check.inc');
+<?php //:
+////////:
+
+require('check.inc');
 require('../connect.php');
-if ($_SESSION['np']) {$sth='<th>Penalty'; $qd='s.npenalty'; $qf=''; $qo='';$ntm=1; $ntms=4;$tdres='';$jsm='';}
-                 else {$r=mysql_query('Select njshowpen,nplayendsound From title Order By id'); $sp=mysql_result($r,0); $ps=mysql_result($r,0,1);
-		       if($_GET['skid']){$r=mysql_query('Select ifnull(ncategory,0) From skaters where id='.$_GET['skid']); $c=mysql_result($r,0);}
-		       $sth=''; $i=0; $qd='m.nvalue'; $qf='inner join type_marks tm left join marks m on (m.njudge='.$_SESSION['id'].' and s.id=m.nskater and tm.id=m.ntype)'; $qo=',tm.npos,tm.id';
-		       $rtm=mysql_query('Select cvalue,id From type_marks Order By npos,id');
-		       $ntm=mysql_numrows($rtm); while($a=mysql_fetch_row($rtm)) {$sti[$i++]=$a[1];$sth.='<th>'.$a[0];}
-		       if ($sp) {$sth.='<th>Sum<th>Penalty';$tdres='<th id="res">&nbsp;<th id="pen">&nbsp;<th id="tot">&nbsp;';$ntms=$ntm+7;}
-			   else {$tdres='<th id="res">&nbsp;';$ntms=$ntm+5;}
-		       $sth.='<th>Total';
-		       $jsm='r=new Array();c=new Array();';
-                       }
-?>
-<html>
+
+if ($_SESSION['np']){
+
+  $sth   = '<th>Penalty';
+  $qd    = 's.npenalty';
+  $qf    = '';
+  $qo    = '';
+  $ntm   = 1;
+  $ntms  = 4;
+  $tdres = '';
+  $jsm   = '';
+
+} else {
+
+  $r  = mysql_query('Select njshowpen,nplayendsound From title Order By id');
+  $sp = mysql_result($r, 0);
+  $ps = mysql_result($r, 0, 1);
+	
+  if ($_GET['skid']){
+    $r = mysql_query('Select ifnull(ncategory,0) From skaters where id='. $_GET['skid']);
+    $c = mysql_result($r, 0);
+  }
+	
+  $sth = '';
+  $i   = 0;
+  $qd  = 'm.nvalue';
+  $qf  = 'inner join type_marks tm left join marks m on (m.njudge='. $_SESSION['id'] .' and s.id=m.nskater and tm.id=m.ntype)';
+  $qo  = ',tm.npos,tm.id';
+	$rtm = mysql_query('Select cvalue,id From type_marks Order By npos,id');
+	$ntm = mysql_numrows($rtm);
+
+  while ($a = mysql_fetch_row($rtm)){
+    $sti[$i++] = $a[1];
+    $sth      .= '<th>'. $a[0];
+  }
+	
+  if ($sp) {
+    $sth  .= '<th>Sum<th>Penalty';
+    $tdres = '<th id="res">&nbsp;<th id="pen">&nbsp;<th id="tot">&nbsp;';
+    $ntms  = $ntm+7;
+  } else {
+    $tdres = '<th id="res">&nbsp;';
+    $ntms  = $ntm+5;
+  }
+	
+  $sth .= '<th>Total';
+	$jsm  = 'r=new Array();c=new Array();';
+}
+
+////////:///////////////////////////////////////////////////////////////////////
+?><html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <link href="../style.css" rel="stylesheet" type="text/css">
@@ -24,8 +64,12 @@ tr.any{}
 tr.any:hover{background-color:#F88017;cursor:pointer;}
 </style>
 <script type="text/javascript">
-<? if ((!$_SESSION['np'])and($_GET['skid'])) {?> 
-var ps=1;
+
+<?php //:-----------------------------------------------------------------------
+    if ((!$_SESSION['np']) and ($_GET['skid'])) { 
+////////: ?> 
+
+var ps = 1;
 if (window.XMLHttpRequest) req = new XMLHttpRequest(); else if (window.ActiveXObject) req = new ActiveXObject("Microsoft.XMLHTTP");
 if (req != undefined)
  {req.onreadystatechange = function()
@@ -50,7 +94,10 @@ if (req != undefined)
   }
 function load(){req.open("GET", "getpen.php?id=<?=$_GET['skid']?>", true); req.send(""); d=setTimeout("load()",1000);}
 
-<? } else if ($_SESSION['np']) {?>
+<?php //:-----------------------------------------------------------------------
+    } else if ($_SESSION['np']) {
+////////: ?>
+
 if (window.XMLHttpRequest) req = new XMLHttpRequest(); else if (window.ActiveXObject) req = new ActiveXObject("Microsoft.XMLHTTP");
 if (req != undefined)
  {req.onreadystatechange = function()
@@ -61,38 +108,65 @@ if (req != undefined)
    };
   }
 function setstart(s){req.open("GET", "setstart.php?s="+s+"&time="+time+"&id=<?=$_GET['skid']?>", true); req.send("");}
-<?}?>
+
+<?php //:-----------------------------------------------------------------------
+    }
+////////: ?>
+
 </script>
 </head>
 <body>
 <center>Judgment Panel<br>
-<? $r=mysql_query('Select s.id,s.nnumber,s.cname,s.cname_local,s.dbday,s.cplace,s.norder,'.$qd.',s.ngroup,c.cvalue,ifnull(c.id,0),s.npenalty,date_add(coalesce(ttimeb,now()),interval coalesce(ttimel,100) second)<now(),concat("<image src=\"",f.cpath,"\">",f.c3let)
+
+<?php //:
+////////:-----------------------------------------------------------------------
+
+$r = mysql_query('Select s.id,s.nnumber,s.cname,s.cname_local,s.dbday,s.cplace,s.norder,'.$qd.',s.ngroup,c.cvalue,ifnull(c.id,0),s.npenalty,date_add(coalesce(ttimeb,now()),interval coalesce(ttimel,100) second)<now(),concat("<image src=\"",f.cpath,"\">",f.c3let)
 		 From skaters s '.$qf.' left join categories c on (s.ncategory=c.id) left join flags f on (s.nflag=f.ncode)
 		 Order By c.npos,c.id,s.norder,s.id'.$qo);
- if ($st=mysql_error()) echo $st;
- //echo '<table border=1 class=txt cellspacing=0 cellpadding=2><th>#<th>Skater<th>Group'.$sth.'</th>'; 
- //for($i=0;$i<$n;$i++)
- $ncat=-1;$ci=0;
- while ($a=mysql_fetch_row($r))
- {if ($ncat!=$a[10])
-  {$si=0;
-   if ($ncat!=-1) {echo '</table><br>';}
-   //echo '<br><a id="c'.$a[10].'">'.$a[9].'</a><br><table id='.$a[10].' border=1 class=txt cellspacing=0 cellpadding=2><tr><th>#<th>Skater<th>Group'.$sth.($a[10]==$c?'<th>Place':'').'</th>';
-   echo '<br><a id="c'.$a[10].'">'.$a[9].'</a><br><table id='.$a[10].' border=1 class=txt cellspacing=0 cellpadding=2><tr><th>#<th>Skater<th>Group'.$sth.(!$_SESSION['np']?'<th>Place':'').'</th>';
-   $ncat=$a[10];
-   $jsm.='r['.$a[10].']=new Array(); c['.$ci++.']='.$a[10].';';
-   }
+
+if ($st=mysql_error()) echo $st;
+//echo '<table border=1 class=txt cellspacing=0 cellpadding=2><th>#<th>Skater<th>Group'.$sth.'</th>'; 
+//for($i=0;$i<$n;$i++)
+$ncat = -1;
+$ci   = 0;
+
+while ($a=mysql_fetch_row($r)){
+  if ($ncat!=$a[10]){
+    $si=0;
+    if ($ncat!=-1) {
+      echo '</table><br>';
+    }
+  
+  //echo '<br><a id="c'.$a[10].'">'.$a[9].'</a><br><table id='.$a[10].' border=1 class=txt cellspacing=0 cellpadding=2><tr><th>#<th>Skater<th>Group'.$sth.($a[10]==$c?'<th>Place':'').'</th>';
+  echo '<br><a id="c'. $a[10] .'">'. $a[9] .'</a><br><table id='. $a[10] .' border=1 class=txt cellspacing=0 cellpadding=2><tr><th>#<th>Skater<th>Group'. $sth . (!$_SESSION['np'] ? '<th>Place' : '') .'</th>';
+  
+  $ncat = $a[10];
+  $jsm .= 'r['. $a[10] .']=new Array(); c['.$ci++.']='.$a[10].';';
+  }
+  
   echo '<tr valign=middle ';
-  if ($a[0]==$_GET['skid']) {echo 'class="red"'; $spj=($a[12]?'ps=0;':'');}
-   elseif (!isset($a[7])) echo 'class="any" onclick="window.open(\'judge.php?skid='.$a[0].'#c'.$a[10].'\',\'_self\');"';
-   echo '><td>'.(isset($a[6])?$a[6]:'&nbsp;').'<td>'.($a[13]?$a[13].' ':'').$a[2].($a[3]?' ('.$a[3].')':'').($a[5]?' ('.$a[5].')':'').'<td>'.($a[8]?'Group '.$a[8]:'&nbsp;').'</td>';//.($a[1]?$a[1].'. ':'')
-  if (($a[0]==$_GET['skid'])and(!isset($a[7])))
-  {echo '<form name=judges method=post action=judge_add.php enctype=multipart/form-data><span id="dummy"></span><input type=hidden name=skid value='.$_GET['skid'].'><input type=hidden name="c" value='.$a[10].'>';
-   $jsm.='r['.$a[10].']['.$si.']=['.$a[0].',-1];cur='.$si.';';
-   for ($i=0;$i<$ntm;$i++) echo '<td><input type=hidden name=ntype['.$i.'] value='.$sti[$i].'><input type=text id="i'.$i.'" class=txt name=mark['.$i.'] value="" onkeyup="s['.$i.']=(this.value==\'\'?0:1); testok();" onchange="s['.$i.']=(isNaN(this.value)?0:1); testok();" onkeypress="return numbersonly(event);">';
-   for ($i=1;$i<$ntm;$i++) mysql_fetch_row($r);
-   echo $tdres.(!$_SESSION['np']?'<th id="p'.$_GET['skid'].'">&nbsp;':'').'<tr><td align=center colspan='.$ntms.'><input type=submit name=subbut class=txt disabled value=" Save "></form>';
-?>
+  
+  if ($a[0]==$_GET['skid']){
+  
+    echo 'class="red"'; 
+    $spj = ($a[12] ? 'ps=0;' : '');
+  
+  } elseif (!isset($a[7])) echo 'class="any" onclick="window.open(\'judge.php?skid='.$a[0].'#c'.$a[10].'\',\'_self\');"';
+  
+  echo '><td>'. (isset($a[6]) ? $a[6] : '&nbsp;') .'<td>'.($a[13]?$a[13].' ':'').$a[2].($a[3]?' ('.$a[3].')':'').($a[5]?' ('.$a[5].')':'').'<td>'.($a[8]?'Group '.$a[8]:'&nbsp;').'</td>';//.($a[1]?$a[1].'. ':'')
+  
+  if (($a[0] == $_GET['skid']) and (!isset($a[7]))){
+    echo '<form name=judges method=post action=judge_add.php enctype=multipart/form-data><span id="dummy"></span><input type=hidden name=skid value='.$_GET['skid'].'><input type=hidden name="c" value='.$a[10].'>';
+    $jsm .= 'r['. $a[10] .']['. $si .']=['. $a[0] .',-1];cur='. $si .';';
+    
+    for ($i=0;$i<$ntm;$i++) echo '<td><input type=hidden name=ntype['.$i.'] value='.$sti[$i].'><input type=text id="i'.$i.'" class=txt name=mark['.$i.'] value="" onkeyup="s['.$i.']=(this.value==\'\'?0:1); testok();" onchange="s['.$i.']=(isNaN(this.value)?0:1); testok();" onkeypress="return numbersonly(event);">';
+    for ($i=1;$i<$ntm;$i++) mysql_fetch_row($r);
+    
+    echo $tdres.(!$_SESSION['np']?'<th id="p'.$_GET['skid'].'">&nbsp;':'').'<tr><td align=center colspan='.$ntms.'><input type=submit name=subbut class=txt disabled value=" Save "></form>';
+
+////////: ?>
+
 <script type="text/javascript">
   var s=new Array();
   var state=0,time=100,t,tb,cur=<?=$a[0]?>;
@@ -179,32 +253,48 @@ function setstart(s){req.open("GET", "setstart.php?s="+s+"&time="+time+"&id=<?=$
   
 </script>
 
-<?
-   }
-   else
-  {echo '<td>'.(isset($a[7])?$a[7]:'&nbsp;');
-   if (!$_SESSION['np'])
-   {unset($total);
-    if (isset($a[7])) $total=$a[7];
-    for ($y=0;$y<$ntm-1;$y++) 
-    {$a=mysql_fetch_row($r);
-     echo '<td>'.(isset($a[7])?$a[7]:'&nbsp;');
-     if (isset($a[7])) $total+=$a[7];
-     }
-    echo '<td>'.(isset($total)?str_replace(',','.',$total):'&nbsp;');
-    if ($sp) echo '<td>'.(isset($a[11])?$a[11]:'&nbsp;').'<td>'.(((isset($total))and(isset($a[11])))?str_replace(',','.',$total-$a[11]):'&nbsp;');
-    //if ($c==$a[10]) {$jsm.='r['.$si.']=['.$a[0].','.($sp?(((isset($total))and(isset($a[11])))?str_replace(',','.',$total-$a[11]):'-1'):(isset($total)?str_replace(',','.',$total):'-1')).'];'; echo '<td align=center id="p'.$a[0].'">&nbsp;';}
-    {$jsm.='r['.$a[10].']['.$si.']=['.$a[0].','.($sp?(((isset($total))and(isset($a[11])))?str_replace(',','.',$total-$a[11]):'-1'):(isset($total)?str_replace(',','.',$total):'-1')).'];'; echo '<td align=center id="p'.$a[0].'">&nbsp;';}
+
+<?php //:
+////////:-----------------------------------------------------------------------
+   
+   } else {
+
+    echo '<td>'.(isset($a[7])?$a[7]:'&nbsp;');
+   
+    if (!$_SESSION['np']) {
+      unset($total);
+    
+      if (isset($a[7])) $total=$a[7];
+    
+      for ($y=0;$y<$ntm-1;$y++) {
+        $a=mysql_fetch_row($r);
+        echo '<td>'.(isset($a[7])?$a[7]:'&nbsp;');
+        if (isset($a[7])) $total+=$a[7];
+      }
+      
+      echo '<td>'.(isset($total)?str_replace(',','.',$total):'&nbsp;');
+      
+      if ($sp) echo '<td>'. (isset($a[11]) ? $a[11] : '&nbsp;') .'<td>'. (((isset($total)) and (isset($a[11]))) ? str_replace(',', '.', $total-$a[11]) : '&nbsp;');
+      
+      //if ($c==$a[10]) {$jsm.='r['.$si.']=['.$a[0].','.($sp?(((isset($total))and(isset($a[11])))?str_replace(',','.',$total-$a[11]):'-1'):(isset($total)?str_replace(',','.',$total):'-1')).'];'; echo '<td align=center id="p'.$a[0].'">&nbsp;';}
+
+      {
+        $jsm .= 'r['. $a[10] .']['. $si .']=['. $a[0] .','.($sp ? (((isset($total)) and (isset($a[11]))) ? str_replace(',', '.', $total-$a[11]) : '-1') : (isset($total) ? str_replace(',', '.', $total) : '-1')) .'];';
+        echo '<td align=center id="p'. $a[0] .'">&nbsp;';
+      }
     }
-   }
-  $si++;
   }
+  $si++;
+}
 
- echo '</table><br>';
+echo '</table><br>';
 
-if (($_SESSION['np'])and($_GET['skid'])) echo '<div style="position: fixed; right: 20px;top: 20px;border: solid black 1px;padding: 5px;-moz-border-radius: 6px;-khtml-border-radius: 6px;-webkit-border-radius: 6px;background: #DDD;"><span id="dummy"></span>Timer<br><a id="timerpad">100 sec</a><br><input id="timerbut" type=button value=" Start " onclick="timer();">&nbsp;<input type=button value=" Reset " onclick="cleartimer();"></div>';
+if (($_SESSION['np']) and ($_GET['skid'])) {
+  echo '<div style="position: fixed; right: 20px;top: 20px;border: solid black 1px;padding: 5px;-moz-border-radius: 6px;-khtml-border-radius: 6px;-webkit-border-radius: 6px;background: #DDD;"><span id="dummy"></span>Timer<br><a id="timerpad">100 sec</a><br><input id="timerbut" type=button value=" Start " onclick="timer();">&nbsp;<input type=button value=" Reset " onclick="cleartimer();"></div>';
+}
 
-?>
+////////: ?>
+
 <script type="text/javascript">  
 <? if ((!$_SESSION['np'])and($_GET['skid'])) echo 'load();';
 if (!$_SESSION['np']) 
@@ -227,8 +317,10 @@ for (var i=0;i<<?=$ci?>;i++) {sortpl(c[i]);}
  }
 ?>
 </script>
+
 <br><input type=button value="Exit from Judgment Panel" onclick="window.open('index.php?exit=1','_self');">
 </center>
+
 <script type="text/javascript">
 var el=document.createElement("input"),fls='';
 if (typeof el.checkValidity!="function") {fls+="Your browser doesn't support validation!<br>";}
@@ -246,5 +338,6 @@ if (fls)
  document.body.appendChild(x);
  }
 </script>
+
 </body>
 </html>
