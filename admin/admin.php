@@ -1,14 +1,18 @@
-<? require ('check.inc') ?>
-<html>
+<?php //:
+////////:
+
+require('check.inc');
+require('../connect.php');
+
+////////:///////////////////////////////////////////////////////////////////////
+?><html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <link href="../style.css" rel="stylesheet" type="text/css">
 <title>Slalom Classic</title>
 </head>
 <body>
-<? 
-require('../connect.php');
-?>
+
 <table width="100%" height="100%" border="0" cellpadding="0" cellspacing="5" align="center">
  <tr>
   <td width="80" height="100%" valign="top">
@@ -23,16 +27,27 @@ require('../connect.php');
    </table>
   </td>
   <td height="100%" valign="top">
-<?
+
+<?php //:
+////////:-----------------------------------------------------------------------
+
 echo '<table width="100%" border=0 cellspacing=0 cellpadding=0>
- <tr bgcolor="#CFCECE"><td width="50%" align=left class=txt><b>Admin panel</b></td>
- <td width="50%" align=right class=txt><a href="../index.html" target=top>Results</a>&nbsp;</td>
- <tr><td colspan=2 class=txt>';
-if (isset($_GET['mode'])){require($_GET['mode'].'.inc');}
-else if (isset($_SESSION['msg'])){echo "<span class='new'>{$_SESSION['msg']}</span>"; unset($_SESSION['msg']);}
+<tr bgcolor="#CFCECE"><td width="50%" align=left class=txt><b>Admin panel</b></td>
+<td width="50%" align=right class=txt><a href="../index.html" target=top>Results</a>&nbsp;</td>
+<tr><td colspan=2 class=txt>';
+
+if (isset($_GET['mode'])){
+  require($_GET['mode'] .'.inc');
+} else if (isset($_SESSION['msg'])){
+  echo "<span class='new'>{$_SESSION['msg']}</span>"; 
+  unset($_SESSION['msg']);
+}
+
 echo '</td></tr>
 </table>';
-?>
+
+////////: ?>
+
   </td>
  </tr>
 </table>

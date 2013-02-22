@@ -1,7 +1,15 @@
-<?
-if ($ntype==1) {$tq='-max(jp.nplace)-min(jp.nplace)'; $to='isnull(s2a),s2a,';}
- elseif ($ntype==0) {$tq=''; $to='';}//$to='isnull(s2),s2,s1 desc,s3 desc,isnull(s4),s4,';
- $r=mysql_query('select s.id,s.nnumber,s.cname,s.cname_local,s.dbday,s.cplace,s.norder,
+<?php //:
+////////:
+
+if ($ntype==1) {
+    $tq = '-max(jp.nplace)-min(jp.nplace)'; 
+    $to = 'isnull(s2a),s2a,';
+} elseif ($ntype==0) {
+    $tq = '';
+    $to = '';
+}//$to='isnull(s2),s2,s1 desc,s3 desc,isnull(s4),s4,';
+
+$r = mysql_query('select s.id,s.nnumber,s.cname,s.cname_local,s.dbday,s.cplace,s.norder,
 s.jpnresult as s1,
 s.jpnplace as s2,
 s.m1nvalue as s3,
@@ -23,32 +31,57 @@ from (select s.id as id,s.nnumber as nnumber,s.cname as cname,s.cname_local as c
 ');
  
 // if ($st=mysql_error()) echo $st;
- $k=0;$kn=0;$c1=0;$c2=10000;$c3=10000;$c4=10000;$fl=1;$sttop5='';$stcurf2='';
- for ($s=0;$s<$ns;$s++)
- {$st='';$stf2='';
-  for ($i=0;$i<$nj;$i++)
-  {for ($j=0;$j<$ntm;$j++)
-   {$a=mysql_fetch_row($r);
-    $st.='<td>'.($a[11]?$a[11]:'&nbsp;');
+
+$k       = 0;
+$kn      = 0;
+$c1      = 0;
+$c2      = 10000;
+$c3      = 10000;
+$c4      = 10000;
+$fl      = 1;
+$sttop5  = '';
+$stcurf2 = '';
+
+for ($s=0;$s<$ns;$s++){
+  $st   = '';
+  $stf2 = '';
+  for ($i=0;$i<$nj;$i++){
+    for ($j=0;$j<$ntm;$j++){
+      $a   = mysql_fetch_row($r);
+      $st .= '<td>'.($a[11]?$a[11]:'&nbsp;');
     }
-   $st.='<td>'.($a[12]?$a[12]:'&nbsp;').'<td>'.($a[13]?$a[13]:'&nbsp;');
-   $stf2.='<th>'.($a[12]?$a[12]:'&nbsp;').'<th>'.($a[13]?$a[13]:'&nbsp;');
-   }
-  if (($c1==$a[8])and($c3==$a[9]))$kn++;//if (($c1==$a[8])and($c2==$a[7])and($c3==$a[9])and($c4==$a[10]))$kn++;
-   else
-  {$c1=$a[8];$c2=$a[7];$c3=$a[9];$c4=$a[10];$k+=$kn+1;$kn=0;}
-  $stf.='<tr'.($lastid==$a[0]?' style="font-weight: 700;"':'').'><td>'.($a[15]?$k:'&nbsp;').'<td>'.($a[1]?'#'.$a[1]:$a[6]).' '.$a[2].($a[3]?' ('.$a[3].')':'').($a[5]?' ('.$a[5].')':'').'<td>'.(isset($a[10])?$a[10]:'&nbsp;').$st.'<td>'.($a[7]?$a[7]:'&nbsp;').'<td>'.($a[8]?$a[8]:'&nbsp;');
-  $stff.='<tr'.($lastid==$a[0]?' style="font-weight: 700;"':'').'><td>'.($a[15]?$k:'&nbsp;').'<td>'.($a[1]?'#'.$a[1]:$a[6]).' '.$a[2].($a[3]?' ('.$a[3].')':'').($a[5]?' ('.$a[5].')':'').'<td>'.(isset($a[10])?$a[10]:'&nbsp;').$st.'<td>'.($a[7]?$a[7]:'&nbsp;').'<td>'.($a[8]?$a[8]:'&nbsp;');
-  if ($a[15]) {$stfe=$stf;$stffe=$stff;}
-  if (($k<=5) and ($a[15])) $sttop5.='<tr'.($lastid==$a[0]?' style="font-weight: 700;"':'').'><td>'.($a[1]?$a[1]:$a[6]).'<td>'.$a[2].($a[3]?' ('.$a[3].')':'').'<td>'.$a[5].'<td>'.$k;
-  if ($lastid==$a[0]) 
-  {$sttabf2.='<tr style="color: yellow; font-weight:700;">'.$stf2.'<td>'.$a[10].'<td>'.($a[15]?$k:'&nbsp;').'</table>';
-   $stcurf2='<Div class=txt20 style="color: yellow; font-weight:700;">'.($a[1]?'#'.$a[1]:$a[6]).' '.$a[2].($a[3]?' ('.$a[3].')':'').($a[5]?' ('.$a[5].')':'').'</div>';
-   }
-  if (($fl)and(!isset($a[14])))
-  {$fl=0;
-   $stnextf2='<br><p class=txt13><b>Next skater: '.($a[1]?'#'.$a[1]:$a[6]).' '.$a[2].($a[3]?' ('.$a[3].')':'').($a[5]?' ('.$a[5].')':'').'</p>';
-   }
+   $st   .='<td>'.($a[12]?$a[12]:'&nbsp;').'<td>'.($a[13]?$a[13]:'&nbsp;');
+   $stf2 .='<th>'.($a[12]?$a[12]:'&nbsp;').'<th>'.($a[13]?$a[13]:'&nbsp;');
   }
- $r=mysql_query('delete from judgeplace where descr='.$descr);
+  
+  //if (($c1==$a[8])and($c2==$a[7])and($c3==$a[9])and($c4==$a[10]))$kn++;
+  if (($c1==$a[8]) and ($c3==$a[9])) {
+    $kn++;
+  } else {
+    $c1=$a[8];$c2=$a[7];$c3=$a[9];$c4=$a[10];$k+=$kn+1;$kn=0;
+  }
+
+  $stf  .= '<tr'.($lastid==$a[0]?' style="font-weight: 700;"':'').'><td>'.($a[15]?$k:'&nbsp;').'<td>'.($a[1]?'#'.$a[1]:$a[6]).' '.$a[2].($a[3]?' ('.$a[3].')':'').($a[5]?' ('.$a[5].')':'').'<td>'.(isset($a[10])?$a[10]:'&nbsp;').$st.'<td>'.($a[7]?$a[7]:'&nbsp;').'<td>'.($a[8]?$a[8]:'&nbsp;');
+  $stff .= '<tr'.($lastid==$a[0]?' style="font-weight: 700;"':'').'><td>'.($a[15]?$k:'&nbsp;').'<td>'.($a[1]?'#'.$a[1]:$a[6]).' '.$a[2].($a[3]?' ('.$a[3].')':'').($a[5]?' ('.$a[5].')':'').'<td>'.(isset($a[10])?$a[10]:'&nbsp;').$st.'<td>'.($a[7]?$a[7]:'&nbsp;').'<td>'.($a[8]?$a[8]:'&nbsp;');
+  
+  if ($a[15]) {
+    $stfe  = $stf;
+    $stffe = $stff;
+  }
+  if (($k<=5) and ($a[15])) {
+    $sttop5 .= '<tr'.($lastid==$a[0]?' style="font-weight: 700;"':'').'><td>'.($a[1]?$a[1]:$a[6]).'<td>'.$a[2].($a[3]?' ('.$a[3].')':'').'<td>'.$a[5].'<td>'.$k;
+  }
+  if ($lastid == $a[0]) {
+    $sttabf2 .= '<tr style="color: yellow; font-weight:700;">'.$stf2.'<td>'.$a[10].'<td>'.($a[15]?$k:'&nbsp;').'</table>';
+    $stcurf2  = '<Div class=txt20 style="color: yellow; font-weight:700;">'.($a[1]?'#'.$a[1]:$a[6]).' '.$a[2].($a[3]?' ('.$a[3].')':'').($a[5]?' ('.$a[5].')':'').'</div>';
+  }
+  if (($fl)and(!isset($a[14]))){
+    $fl = 0;
+    $stnextf2 = '<br><p class=txt13><b>Next skater: '.($a[1]?'#'.$a[1]:$a[6]).' '.$a[2].($a[3]?' ('.$a[3].')':'').($a[5]?' ('.$a[5].')':'').'</p>';
+  }
+
+}
+
+$r = mysql_query('delete from judgeplace where descr='. $descr);
+
 ?>
