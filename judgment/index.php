@@ -7,7 +7,9 @@ if ($_POST['auth_name']){
     
     $name = mysql_real_escape_string($_POST['auth_name']);
     $pass = mysql_real_escape_string($_POST['auth_pass']);
-    $r = mysql_query('Select id,npenalty From judges where nnumber="'.$name.'" and cpass="'.$pass.'"');
+
+    //: login for judges
+    $r = mysql_query('Select id,npenalty From judges where nnumber="'. $name .'" and cpass="'. $pass .'"');
     
     if ($st=mysql_error()) echo $st;
     if ($a=mysql_fetch_row($r)){
