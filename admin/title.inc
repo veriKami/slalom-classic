@@ -1,6 +1,10 @@
 <center><b><a class=txt>Configuration</a></b></center>
 <form name=config method=post action=title.php enctype=multipart/form-data>
-<? $r=mysql_query('Select id,cname,ngroup,cftpfile,cplace,DATE_FORMAT(ddate, "%d.%m.%Y"),cdiscip,ccategory,ntype,njshowpen
+
+<?php //:
+////////:-----------------------------------------------------------------------
+
+$r=mysql_query('Select id,cname,ngroup,cftpfile,cplace,DATE_FORMAT(ddate, "%d.%m.%Y"),cdiscip,ccategory,ntype,njshowpen
                    ,coalesce(nname,1), nname_local, nplace, nteam, nnumber, nflag,nplayendsound From title Order By id');
    if ($st=mysql_error()) echo $st;
    $n=mysql_numrows($r);
@@ -34,7 +38,9 @@
     </td>
 <tr><td colspan=2><input type=submit name=subbut class=txt value=" Save " onclick="document.forms[0].refresh.value=0;"> <input type=submit class=txt value="Refresh index" onclick="document.forms[0].refresh.value=1;">';
     }
-?>
+
+////////: ?>
+
 <link type="text/css" href="jquery/css/smoothness/jquery-ui-1.8.9.custom.css" rel="Stylesheet" />	
 <script type="text/javascript" src="jquery/js/jquery-1.4.4.min.js"></script>
 <script type="text/javascript" src="jquery/js/jquery-ui-1.8.9.custom.min.js"></script>

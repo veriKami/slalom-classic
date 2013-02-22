@@ -1,31 +1,48 @@
 <center><b><a class=txt12>Skaters</a></b></center>
 
-<? if (isset($_GET['sort'])) {$_GET['sort']=intval($_GET['sort']); $so='&sort='.$_GET['sort'];} else $so='';
+<?php //:
+////////:-----------------------------------------------------------------------
+
+if (isset($_GET['sort'])) {$_GET['sort']=intval($_GET['sort']); $so='&sort='.$_GET['sort'];} else $so='';
 if (isset($_GET['ncat'])) {$_GET['ncat']=intval($_GET['ncat']); $sc='&ncat='.$_GET['ncat'];} else $sc='';
-function ec($i,$k)
-{global $mc,$so;
+
+/**
+ * Function
+ */
+function ec($i,$k){
+  global $mc,$so;
  echo '<li class="'.(($k==$mc[$i][0])?'sel':'unsel').'"><a href="admin.php?mode=skaters&ncat='.$mc[$i][0].$so.'">'.$mc[$i][1].'('.$mc[$i][2].')</a></li>';
  }
+
 $rc=mysql_query('Select c.id,c.cvalue,count(s.id) From categories c left join skaters s on(s.ncategory=c.id) group by c.id Order By c.npos,c.id'); $ncat=mysql_numrows($rc);
+
 if ($ncat)
 {//echo '<table class=catt border=0 cellpading=0 cellspacing=0><tr>';
+ 
  echo '<ul class="catt">';
+ 
  $r=mysql_query('Select count(*) From skaters');
+ 
  $mc[-2][0]=-1; $mc[-2][1]='All'; $mc[-2][2]=mysql_result($r,0);
  $r=mysql_query('Select count(id) From skaters where ncategory is null');
  $mc[-1][0]=0; $mc[-1][1]='Without Category'; $mc[-1][2]=mysql_result($r,0);
  ec(-2,(isset($_GET['ncat'])?$_GET['ncat']:-1));ec(-1,(isset($_GET['ncat'])?$_GET['ncat']:-1));
  for($i=0;$i<$ncat;$i++) {$mc[$i]=mysql_fetch_row($rc); ec($i,(isset($_GET['ncat'])?$_GET['ncat']:-1));}
  //echo '<tr><td class="main" colspan='.($ncat+2).'>';
+ 
  echo '</ul>';
  if (($_GET['ncat']==-1)or(!isset($_GET['ncat']))) $scq='';
  else if ($_GET['ncat']==0) $scq=' where c.id is null';
   else $scq=' where c.id='.$_GET['ncat'];
 
  $r=mysql_query('Select c.id,ifnull(c.ngroup,0),count(s.id) From categories c left join skaters s on(s.ncategory=c.id)'.$scq.' group by c.id Order By c.npos,c.id');
+ 
  if ($st=mysql_error()) echo $st;
+ 
  $jsm='jsm0=new Array();jsmi0=0;'; $ng=mysql_numrows($r);
+ 
  for($i=0;$i<$ng;$i++){$a=mysql_fetch_row($r); $ngroup[$i]=$a; $jsm.='jsm'.$a[0].'=new Array();jsmi'.$a[0].'=0;';}
+ 
  if (($_GET['ncat']==-1)or(!$_GET['ncat']))
  {$r=mysql_query('Select ifnull(ngroup,0) From title Order By id'); $ngroup[$i][0]=0; $ngroup[$i][1]=mysql_result($r,0);
   $r=mysql_query('Select count(id) From skaters where ncategory is null'); $ngroup[$i][2]=mysql_result($r,0);
@@ -35,9 +52,18 @@ if ($ncat)
 else
  {$scq='';$jsm='jsm0=new Array();jsmi0=0;'; $ng=0;
   }
+ 
  mysql_query('SET group_concat_max_len = 45000;');
+ 
  $jsmf='jsmf=['.mysql_result(mysql_query('select group_concat(concat("[",ncode,",\"",cvalue,"\",\"",cpath,"\",\"",c3let,"\"]") order by cvalue separator ",") from flags'),0).'];';
-?><form name=skaters method=post action=skaters.php><? 
+
+////////: ?>
+
+<form name=skaters method=post action=skaters.php>
+
+<?php //:
+////////:-----------------------------------------------------------------------
+
 if ($_GET['add']!=1) {echo '<input type=button value=" Add " class=txt onclick="window.open(\'admin.php?mode=skaters&add=1'.$so.$sc.'\',\'_self\');"> <input type=button value="Import from CSV" class=txt onclick="window.open(\'admin.php?mode=skaterscsv'.$so.$sc.'\',\'_self\');"> <input type=submit name=subbuta class=txt value=" Save ">';$std='';}
     else {$std=' disabled'; }
 //else $ng=0;
@@ -50,23 +76,43 @@ function cat($name,$i,$d,$a)
   echo '</select>';
   }
  }
-?>
+
+////////: ?>
+
 <table class=txt cellspacing=1 cellpadding=1 border=1>
-<th>#<th>Number <a href=admin.php?mode=skaters&sort=2<?=$sc?>>\/</a><th>Name <a href=admin.php?mode=skaters&sort=3<?=$sc?>>\/</a><th>Name(local) <a href=admin.php?mode=skaters&sort=4<?=$sc?>>\/</a><th>Birthday <a href=admin.php?mode=skaters&sort=5<?=$sc?>>\/</a><th>Country<?if ($_GET['add']!=1) echo' <input type=button value="..." title="Set country to all" onclick="setf(-1)"><br><input type=button class=txt value="Set automatically" title="Try to set country automatically to all" onclick="seta()">';?><th>Place<th>Team<th>Rating <a href=admin.php?mode=skaters&sort=8<?=$sc?>>\/</a><th>Category <a href=admin.php?mode=skaters&sort=c.npos,c.id<?=$sc?>>\/</a><?
+<th>#<th>Number <a href=admin.php?mode=skaters&sort=2<?=$sc?>>\/</a><th>Name <a href=admin.php?mode=skaters&sort=3<?=$sc?>>\/</a><th>Name(local) <a href=admin.php?mode=skaters&sort=4<?=$sc?>>\/</a><th>Birthday <a href=admin.php?mode=skaters&sort=5<?=$sc?>>\/</a><th>Country
+
+<?
+
+if ($_GET['add']!=1) echo' <input type=button value="..." title="Set country to all" onclick="setf(-1)"><br><input type=button class=txt value="Set automatically" title="Try to set country automatically to all" onclick="seta()">';?><th>Place<th>Team<th>Rating <a href=admin.php?mode=skaters&sort=8<?=$sc?>>\/</a><th>Category <a href=admin.php?mode=skaters&sort=c.npos,c.id<?=$sc?>>\/</a><?
 if (($_GET['add']!=1)&& ($ncat))
  {echo '<br><select class=txt onchange="setc(this.selectedIndex);document.getElementById(\'rand\').disabled=true;" title="Set group to all"><option value="-1">Set group to all</option><option value="0">not selected</option>';
   for($j=0;$j<$ncat;$j++) echo '<option>'.$mc[$j][1].'</option>';
   echo '</select>';
   }
-?><th>Start Position <a href=admin.php?mode=skaters&sort=7<?=$sc?>>\/</a><?if ($_GET['add']!=1) echo '<br><input id="rand" type=button value="Randomize" title="Randomize Start Position" class=txt onclick="randsp();"><br><input id="rand" type=button value="Back to rating" title="Start Position by rating back" class=txt onclick="ordersp();">';?><th>Operation</th>
+
+?>
+
+<th>Start Position <a href=admin.php?mode=skaters&sort=7<?=$sc?>>\/</a>
+<? 
+
+if ($_GET['add']!=1) echo '<br><input id="rand" type=button value="Randomize" title="Randomize Start Position" class=txt onclick="randsp();"><br><input id="rand" type=button value="Back to rating" title="Start Position by rating back" class=txt onclick="ordersp();">';
+
+?>
+
+<th>Operation</th>
 <input type=hidden name=delid value=""><input type=hidden name="sort" value="<?=$_GET['sort']?>"><input type=hidden name="ncato" value="<?=$_GET['ncat']?>">
+
 <?
-  //if ($_GET['ncat']==-1) $scq='';
+
+//if ($_GET['ncat']==-1) $scq='';
 //else if ($_GET['ncat']==0) $scq=' where ncategory is null';
 // else $scq=' where ncategory='.$_GET['ncat'];
   $r=mysql_query('Select s.id,s.nnumber,s.cname,s.cname_local,DATE_FORMAT(s.dbday, "%d.%m.%Y"),s.cplace,s.norder,s.nrat,s.ngroup,ifnull(c.id,0),s.nflag,concat("<image src=\"",f.cpath,"\">",f.c3let),cteam From skaters s left join categories c on (s.ncategory=c.id) left join flags f on (s.nflag=f.ncode)'.$scq.' Order By '.($_GET['sort']?($_GET['sort']==5?'s.dbday':$_GET['sort']).',':'').'c.npos,c.id,s.norder,s.id');
+  
   if ($st=mysql_error()) echo $st;
   $n=mysql_numrows($r);
+  
   for($i=0;$i<$n;$i++)
   {$a=mysql_fetch_row($r);
    $jsm.='jsm'.$a[9].'[jsmi'.$a[9].']=new Array(); jsm'.$a[9].'[jsmi'.$a[9].'][0]='.$i.'; jsm'.$a[9].'[jsmi'.$a[9].'++][1]='.($a[7]?$a[7]:'1000000').';';
@@ -98,12 +144,19 @@ if (($_GET['add']!=1)&& ($ncat))
 <td><a class=txt id="e0">*</a></td></tr>';
    }
   echo '<tr><td colspan=12 align=center><input type=submit name=subbut class=txt value=" Save "></td></tr>';
+
 ?>
+
 <link type="text/css" href="jquery/css/smoothness/jquery-ui-1.8.9.custom.css" rel="Stylesheet" />	
 <script type="text/javascript" src="jquery/js/jquery-1.4.4.min.js"></script>
 <script type="text/javascript" src="jquery/js/jquery-ui-1.8.9.custom.min.js"></script>
 <script>
-<? $_GET['add']?$i=$n:$i=0; for(;$i<=$n;$i++) { ?>
+
+<? 
+
+$_GET['add']?$i=$n:$i=0; for(;$i<=$n;$i++) { 
+
+?>
 
 	$(function() {
 		$( "#datepicker<?=$i?>" ).datepicker({
@@ -121,12 +174,23 @@ if (($_GET['add']!=1)&& ($ncat))
 			yearRange: '-40:-4'
 		});
 	});
-<?}?>
+
+<?
+
+}
+
+?>
+
 </script>
 
 <script type="text/javascript">
 var pf,req,cf=-1,<?=$jsmf?>
-<? if ($_GET['add']==1) echo 'document.skaters.nnumberadd.focus();';?>
+
+<? 
+
+if ($_GET['add']==1) echo 'document.skaters.nnumberadd.focus();';
+
+?>
   
   function isdate(d)
   {if (d.value=='') return true;
@@ -162,7 +226,13 @@ var pf,req,cf=-1,<?=$jsmf?>
    else for(j=0;j<<?=$n?>;j++) setflag(j,ncode,cpath,c3let);
    }
   req=new Array();
-<? for ($i=0;$i<$n;$i++) {?>
+
+<? 
+
+for ($i=0;$i<$n;$i++) {
+
+?>
+
   if (window.XMLHttpRequest) req[<?=$i?>] = new XMLHttpRequest(); else if (window.ActiveXObject) req[<?=$i?>] = new ActiveXObject("Microsoft.XMLHTTP");
   if (req[<?=$i?>] != undefined)
   {req[<?=$i?>].onreadystatechange = function()
@@ -182,11 +252,27 @@ var pf,req,cf=-1,<?=$jsmf?>
      }
     };
    }
-<? }?>
+
+<? 
+
+}
+
+?>
+
   function seta()
   {var c,n,i,j,s,fl;
-   <? if ($_GET['add']==1) { ?>
-   <?}else{?>
+   
+   <? 
+
+   if ($_GET['add']==1) { 
+
+  ?>
+  <?
+  
+   }else{
+
+  ?>
+   
    for (i=0;i<<?=$n?>;i++)
    {c=document.getElementById('cplace'+i).value; fl=1;
     for (j=0,n=jsmf.length;(j<n)&&(fl);j++) if (c.indexOf(jsmf[j][1])!=-1) {setflag(i,jsmf[j][0],jsmf[j][2],jsmf[j][3]); fl=0;}
@@ -196,7 +282,13 @@ var pf,req,cf=-1,<?=$jsmf?>
      req[i].open("GET", "getflag.php?i="+i+"&cplace="+c, true); req[i].send("");
      }
     }
-   <?}?>
+
+   <?
+
+   }
+
+   ?>
+   
    }
   
 function gi(a) {if (a.childNodes[0]) return parseInt(a.childNodes[0].nodeValue); else return '';}
@@ -223,8 +315,14 @@ function setf(j)
 
 
   function randsp()
-  {<?=$jsm?>
-<?for ($i=0;$i<=$ng;$i++):?>
+  {
+
+  <?=$jsm?>
+  <?
+
+    for ($i=0;$i<=$ng;$i++):
+
+  ?>
    if (n=<?=$ngroup[$i][1]?>)
    {jsm<?=$ngroup[$i][0]?>.sort(function(a, b){return (b[1]==a[1]?0.5 - Math.random():b[1]-a[1])});
     c=<?=$ngroup[$i][2]?>%n; g=(<?=$ngroup[$i][2]?>-c)/n;
@@ -296,13 +394,26 @@ function setf(j)
      sete(jsm<?=$ngroup[$i][0]?>[i][0]);
      }
     }
-<?endfor;?>
+
+
+<?
+
+endfor;
+
+?>
+
    }
 
 
 function ordersp()
-  {<?=$jsm?>
-<?for ($i=0;$i<=$ng;$i++):?>
+  {
+
+  <?=$jsm?>
+  <?
+
+  for ($i=0;$i<=$ng;$i++):
+
+  ?>
    if (n=<?=$ngroup[$i][1]?>)
    {jsm<?=$ngroup[$i][0]?>.sort(function(a, b){return (b[1]==a[1]?0.5 - Math.random():b[1]-a[1])});
     c=<?=$ngroup[$i][2]?>%n; g=(<?=$ngroup[$i][2]?>-c)/n;gi=0;
@@ -343,12 +454,19 @@ function ordersp()
      sete(jsm<?=$ngroup[$i][0]?>[i][0]);
      }
     }
-<?endfor;?>
+
+<?
+
+endfor;
+
+?>
    }
 </script>
 </table>
 </form>
+
 <?
+
  //mysql_query('SET group_concat_max_len = 45000;');
  $st=mysql_result(mysql_query('select group_concat(concat("<span class=\"unsel\" id=\"fg",ncode,"\" onclick=\"closeedit(",ncode,",\'",cpath,"\'",",\'",c3let,"\'",")\"><img height=14 width=22 src=\"",cpath,"\"/>&nbsp;",cvalue,"</span>") order by cvalue separator "&nbsp;") from flags'),0);
  echo '<div id="edit" style="z-index:-1; display:none;"><table class="main"><tbody><tr><td class="cap">Choose Country <input type=button class=txt value=" Close " onclick="closee()"></td></tr><tr><td id="ph">

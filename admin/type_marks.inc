@@ -1,11 +1,21 @@
 <b><a class=txt>Types of Marks</a></b>
-<? if ($_GET['add']!=1) {echo '<br><input type=button value=" Add " class=txt onclick="window.open(\'admin.php?mode=type_marks&add=1\',\'_self\');">'; $std='';}
-    else $std=' disabled';?>
+
+<?php //:
+////////:-----------------------------------------------------------------------
+
+if ($_GET['add']!=1) {echo '<br><input type=button value=" Add " class=txt onclick="window.open(\'admin.php?mode=type_marks&add=1\',\'_self\');">'; $std='';}
+    else $std=' disabled';
+
+////////: ?>
+
 <table class=txt cellspacing=1 cellpadding=1 border=1>
 <th>#<th>Name<th>Position<th>Operation</th>
 <form name=type_marks method=post action=type_marks.php>
 <input type=hidden name=delid value="">
-<?
+
+<?php //:
+////////:-----------------------------------------------------------------------
+
   $r=mysql_query('Select id,cvalue,npos From type_marks Order By npos,id');
   $n=mysql_numrows($r);
   for($i=0;$i<$n;$i++)
@@ -22,7 +32,8 @@
 <td></td></tr>';
    }
   echo '<tr><td colspan=4 align=center><input type=submit name=subbut class=txt value=" Save "></td></tr>';
-?>
+
+////////: ?>
 
 <script type="text/javascript">
 <? if ($_GET['add']==1) echo ' document.type_marks.cvalueadd.focus();';?>

@@ -1,10 +1,28 @@
-<?
-if (isset($_GET['ncat'])) {$_GET['ncat']=intval($_GET['ncat']); $sc='&ncat='.$_GET['ncat'];} else $sc='';
-function ec($i,$k)
-{global $mc,$so,$cc; if ($k==$mc[$i][0]) {$cat='sel'; $cc=$mc[$i][1];} else $cat='unsel';
+<?php //:
+////////:-----------------------------------------------------------------------
+
+if (isset($_GET['ncat'])) {
+  $_GET['ncat']=intval($_GET['ncat']); 
+  $sc='&ncat='.$_GET['ncat'];
+} else {
+  $sc='';
+}
+
+/**
+* Function
+*/
+function ec($i,$k){
+  global $mc,$so,$cc; 
+  if ($k==$mc[$i][0]) {
+    $cat='sel'; 
+    $cc=$mc[$i][1];
+  } else $cat='unsel';
  echo '<li class="'.$cat.'"><a href="admin.php?mode=protocol&ncat='.$mc[$i][0].$so.'">'.$mc[$i][1].'('.$mc[$i][2].')</a></li>';
- }
-$rc=mysql_query('Select c.id,c.cvalue,count(s.id) From categories c left join skaters s on(s.ncategory=c.id) group by c.id Order By c.npos,c.id'); $ncat=mysql_numrows($rc);
+}
+
+$rc = mysql_query('Select c.id,c.cvalue,count(s.id) From categories c left join skaters s on(s.ncategory=c.id) group by c.id Order By c.npos,c.id'); 
+$ncat=mysql_numrows($rc);
+
 if ($ncat)
 {//echo '<table class=catt border=0 cellpading=0 cellspacing=0><tr>';
  echo '<ul class="catt">';
@@ -34,12 +52,17 @@ if ($ncat)
 else
  {//$scq='';$jsm='jsm0=new Array();jsmi0=0;'; $ng=0;
   }
+
 if (isset($_GET['ncat'])) {
+
 $r=mysql_query('Select cname,cftpfile,ngroup,cplace,DATE_FORMAT(ddate, "%d.%m.%Y"),cdiscip,ccategory,ntype,nflag,nnumber,nname,nname_local,nplace,nteam From title Order By id');
 $t=mysql_fetch_row($r);
+
 if ($t[0]) {$st='<div class=txt20 style="font-weight:700;">'.$t[0].'</div><div class=txt14>'.$t[3].($t[4]?', '.$t[4]:'').'<br>'.$t[5].', '.$cc.'</div>';}
 $t=time();
-?>
+
+////////: ?>
+
 <script type="text/javascript">
 var t=<?=$t?>,t2=<?=$t?>,req,req2,fl=1;;
 if (window.XMLHttpRequest) req = new XMLHttpRequest(); else if (window.ActiveXObject) req = new ActiveXObject("Microsoft.XMLHTTP");
@@ -79,7 +102,14 @@ if (req != undefined)
   //d=setTimeout("load()",2000);
   }
 
-function load() {req.open("GET", "../fp<?=$_GET['ncat']?>.html?t="+new Date().getTime(), true); req.send(""); d=setTimeout("load()",2000);}
+function load() {
+  req.open("GET", "../fp<?php //:
+////////:-----------------------------------------------------------------------
+
+    print $_GET['ncat']
+
+////////: ?>.html?t="+new Date().getTime(), true); 
+  req.send(""); d=setTimeout("load()",2000);}
 
 if (window.XMLHttpRequest) req2 = new XMLHttpRequest(); else if (window.ActiveXObject) req2 = new ActiveXObject("Microsoft.XMLHTTP");
 if (req2 != undefined)
@@ -100,8 +130,12 @@ function load2()
   }
 
 </script>
+
 <input class=txt type=checkbox id="ncr" value=1 checked onclick="fl=1; load();"><label class=txt for="ncr">&nbsp;Country (Region)</label>&nbsp;<input class=txt type=checkbox id="nc" value=1 onclick="fl=1; load();"><label class=txt for="nc">&nbsp;Country</label>&nbsp;<input class=txt type=checkbox id="nr" value=1 onclick="fl=1; load();"><label class=txt for="nr">&nbsp;Region</label>
 <table id="tt" border=1 class=txt cellspacing=0 cellpadding=2><caption><?=$st?></caption><tr id="th"><th>Rank<th>Skater ID<th>Skater<th id="cr">Country(Region)<th id="c">Country<th id="r">Region<tbody id="t"></table>
 
 
-<?}?>
+<?php //:
+////////:-----------------------------------------------------------------------
+    }
+////////: ?>
