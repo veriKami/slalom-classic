@@ -1,32 +1,31 @@
-✪ slalom-classic ••••
-=====================
----------------------
+✪ slalom-classic (°°°°)••••
+===========================
+---------------------------
 
 ...goin' inline & doin' some more...
 
 
-STRUCTURE
-=========
+✪ application structure
+=======================
+-----------------------
 
 admin
 -----
 
-- *.php
-- *.inc
+* jquery UI (dir)
+* db.sql
+* cpftp.sh
 
-- db.sql
-- cpftp.sh
-
-- jquery UI (dir)
-
+* (...).php
+* (...).inc
 
 judgment
 --------
 
-- *.php
-- *.inc
+* 911_1245282216.mp3
 
-- 911_1245282216.mp3
+* (...).php
+* (...).inc
 
 
 (°°°°)
